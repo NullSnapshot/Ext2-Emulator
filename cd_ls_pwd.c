@@ -68,7 +68,7 @@ int ls_dir(MINODE *mip)
     
       // get stat
       MINODE *dirmip = iget(dev, dp->inode);
-      ls_file(dirmip, dp->name);
+      ls_file(dirmip, temp);
       iput(dirmip);
 
      cp += dp->rec_len;
