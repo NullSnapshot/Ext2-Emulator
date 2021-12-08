@@ -26,6 +26,7 @@ int   n;         // number of component strings
 int fd, dev;
 int nblocks, ninodes, bmap, imap, iblk;
 char line[128], cmd[32], pathname[128], arg2[128];
+char *disk;
 
 // Level 1 files
 #include "cd_ls_pwd.c"
@@ -92,7 +93,10 @@ int mount_root()
   mountTable[0].bmap = bmap;
   mountTable[0].imap = imap;
   mountTable[0].iblk = iblk;
+  strncpy(mountTable[0].name, disk, 64);
   root = iget(dev, 2);
+  mountTable[0].mounted_inode = root;
+  strcpy(mountTable[0].mount_name, "/");
 }
 
 MOUNT *getmptr(int dev)
@@ -106,12 +110,11 @@ MOUNT *getmptr(int dev)
   }
   return NULL;
 }
-
-char *disk = "diskimage";
 int main(int argc, char *argv[ ])
 {
   int ino;
   char buf[BLKSIZE];
+  disk = argv[1];
 
   printf("checking EXT2 FS ....");
   if ((fd = open(argv[1], O_RDWR)) < 0){
@@ -169,7 +172,7 @@ int main(int argc, char *argv[ ])
     arg2[0] = 0;
 
     sscanf(line, "%s %s %s", cmd, pathname, arg2);
-    printf("cmd=%s pathname=%s arg2=%s\n", cmd, pathname, arg2);
+    //printf("cmd=%s pathname=%s arg2=%s\n", cmd, pathname, arg2);
   
     if (strcmp(cmd, "ls")==0)
        ls();
@@ -201,7 +204,10 @@ int main(int argc, char *argv[ ])
         ex2cat();
     else if (strcmp(cmd, "cp")==0)
         ex2cp();
-    
+    else if (strcmp(cmd, "mount")==0)
+        ex2mount();
+    else if (strcmp(cmd, "umount")==0)
+        ex2umount();
     else if(strcmp(cmd, "cs")==0)
         ex2cs();
     else if (strcmp(cmd, "quit")==0)

@@ -41,7 +41,7 @@ int tokenize(char *pathname)
 {
   int i;
   char *s;
-  printf("tokenize %s\n", pathname);
+  //printf("tokenize %s\n", pathname);
 
   strcpy(gpath, pathname);   // tokens are in global gpath[ ]
   n = 0;
@@ -54,9 +54,9 @@ int tokenize(char *pathname)
   }
   name[n] = 0;
   
-  for (i= 0; i<n; i++)
-    printf("%s  ", name[i]);
-  printf("\n");
+  //for (i= 0; i<n; i++)
+    //printf("%s  ", name[i]);
+  //printf("\n");
 }
 
 // allocate a free minode for use
@@ -143,6 +143,7 @@ void iput(MINODE *mip)
  /* write INODE back to disk */
  block = (mip->ino -1) / 8 + iblk;
  offset = (mip->ino -1) % 8;
+ mip->dirty = 0;
 
  //Get block containing this inode
  get_block(mip->dev, block, buf);
@@ -159,7 +160,7 @@ int search(MINODE *mip, char *name)
    DIR *dp;
    INODE *ip;
 
-   printf("search for %s in MINODE = [%d, %d]\n", name,mip->dev,mip->ino);
+   //printf("search for %s in MINODE = [%d, %d]\n", name,mip->dev,mip->ino);
    ip = &(mip->INODE);
 
    /*** search for name in mip's data blocks: ASSUME i_block[0] ONLY ***/
@@ -167,15 +168,15 @@ int search(MINODE *mip, char *name)
    get_block(dev, ip->i_block[0], sbuf);
    dp = (DIR *)sbuf;
    cp = sbuf;
-   printf("  ino   rlen  nlen  name\n");
+   //printf("  ino   rlen  nlen  name\n");
 
    while (cp < sbuf + BLKSIZE){
      strncpy(temp, dp->name, dp->name_len);
      temp[dp->name_len] = 0;
-     printf("%4d  %4d  %4d    %s\n", 
-           dp->inode, dp->rec_len, dp->name_len, dp->name);
+     //printf("%4d  %4d  %4d    %s\n", 
+           //dp->inode, dp->rec_len, dp->name_len, dp->name);
      if (strcmp(temp, name)==0){
-        printf("found %s : ino = %d\n", temp, dp->inode);
+        //printf("found %s : ino = %d\n", temp, dp->inode);
         return dp->inode;
      }
      cp += dp->rec_len;
@@ -191,7 +192,7 @@ int getino(char *pathname)
   INODE *ip;
   MINODE *mip;
 
-  printf("getino: pathname=%s\n", pathname);
+  //printf("getino: pathname=%s\n", pathname);
   if (strcmp(pathname, "/")==0)
       return 2;
   
@@ -206,14 +207,14 @@ int getino(char *pathname)
   tokenize(pathname);
 
   for (i=0; i<n; i++){
-      printf("===========================================\n");
-      printf("getino: i=%d name[%d]=%s\n", i, i, name[i]);
+      //printf("===========================================\n");
+      //printf("getino: i=%d name[%d]=%s\n", i, i, name[i]);
  
       ino = search(mip, name[i]);
 
       if (ino==0){
          iput(mip);
-         printf("name %s does not exist\n", name[i]);
+         //printf("name %s does not exist\n", name[i]);
          return 0;
       }
       iput(mip);
@@ -319,7 +320,7 @@ int ialloc(int dev)
       {
          set_bit(buf, i);
          put_block(dev, imap, buf);
-         printf("allocated ino = %d\n", i+1); // Bits count from 0; ino from 1
+         //printf("allocated ino = %d\n", i+1); // Bits count from 0; ino from 1
          return i+1;
       }
    }
@@ -339,7 +340,7 @@ int balloc(int dev)
       {
          set_bit(buf, i);
          put_block(dev, bmap, buf);
-         printf("Allocated block = %d\n", i+1);
+         //printf("Allocated block = %d\n", i+1);
          return i+1;
       }
    }

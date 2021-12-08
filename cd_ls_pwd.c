@@ -55,7 +55,24 @@ int ls_file(MINODE *mip, char *name)
 
   //size and name
   printf("%8d ", ip.i_size);
-  printf("\t %s \n", name);
+  printf("\t %s \t", name);
+
+  //symlink
+  if (S_ISLNK(ip.i_mode))
+  {
+    char buf[60];
+    strncpy(buf, (char *)ip.i_block, 60);
+    printf("[symlnk-> %s] ",buf);
+  }
+
+  //mount
+  if (mip->mounted != 0)
+  {
+    MOUNT *mptr = mip->mptr;
+    printf("[mnt->%s] ",mptr->name);
+  }
+
+  printf("\n");
 }
 
 int ls_dir(MINODE *mip)
@@ -141,5 +158,6 @@ int rpwd(MINODE *wd)
   findmyname(pip, my_ino, my_name);
   rpwd(pip); // recurse call rpwd(pip) with parent minode
   printf("/%s", my_name);
+  iput(pip);
 }
 

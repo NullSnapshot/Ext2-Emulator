@@ -6,7 +6,7 @@ int ex2mkdir()
     // copy so we can preserve for use.
     strcpy(targetLocation, pathname);
     getTargetDirectory(pathname, &basename, &targetDir);
-    printf("target: %s | %s \n", targetDir, basename);
+    //printf("target: %s | %s \n", targetDir, basename);
     int pino = getino(targetDir);
     MINODE *pmip = iget(dev, pino);
 

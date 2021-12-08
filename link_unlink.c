@@ -34,7 +34,7 @@ int ex2link()
     char *cp = dp;
     while (cp < buf + BLKSIZE)
     {
-        printf("%d|%d|%d|%s\n", dp->inode, dp->rec_len, dp->name_len, dp->name);
+        //printf("%d|%d|%d|%s\n", dp->inode, dp->rec_len, dp->name_len, dp->name);
         cp += dp->rec_len;
         dp = (DIR *)cp;
     }

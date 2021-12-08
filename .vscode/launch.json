@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/a.out",
-            "args": ["${workspaceFolder}/diskimage"],
+            "args": ["${workspaceFolder}/disk2"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
