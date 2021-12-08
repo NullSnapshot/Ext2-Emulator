@@ -17,6 +17,7 @@ MINODE minode[NMINODE];
 MINODE *root;
 PROC   proc[NPROC], *running;
 OFT oft[4];
+MOUNT mountTable[8]; // set all dev = 0
 
 char gpath[128]; // global for tokenized components
 char *name[64];  // assume at most 64 components in pathname
@@ -44,6 +45,7 @@ int init()
   MINODE *mip;
   PROC   *p;
   OFT *o;
+  MOUNT *m;
 
   printf("init()\n");
 
@@ -69,13 +71,36 @@ int init()
     o = &oft[i];
     o->refCount = 0; // resource is free.
   }
+  for(i=0; i<8; i++)
+  {
+    m = &mountTable[i];
+    m->dev = 0;
+  }
 }
 
 // load root INODE and set root pointer to it
 int mount_root()
 {  
   printf("mount_root()\n");
+  mountTable[0].dev = dev;
+  mountTable[0].ninodes = ninodes;
+  mountTable[0].nblocks = nblocks;
+  mountTable[0].bmap = bmap;
+  mountTable[0].imap = imap;
+  mountTable[0].iblk = iblk;
   root = iget(dev, 2);
+}
+
+MOUNT *getmptr(int dev)
+{
+  for(int i=0; i<12; i++)
+  {
+    if(mountTable[i].dev = dev)
+    {
+      return &mountTable[i];
+    }
+  }
+  return NULL;
 }
 
 char *disk = "diskimage";

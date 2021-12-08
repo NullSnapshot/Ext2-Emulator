@@ -9,7 +9,6 @@ int cd()
   {
     iput(running->cwd);
     running->cwd = mip;
-    printf("%s refCount: %d\n", pathname, mip->refCount);
   }
   else
   {

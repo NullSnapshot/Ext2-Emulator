@@ -74,8 +74,8 @@ void ex2cat()
     while(n = ex2read(fd, mybuf, 1024))
     {
         mybuf[n] = 0;
-        printf("%s", mybuf);
-        // spit out chars from mybuf[ ] but handle \n properly.
+        fwrite(mybuf, 1, BLKSIZE, stdout);
+        bzero(mybuf, 1024);
     }
     ex2close(fd);
 }
