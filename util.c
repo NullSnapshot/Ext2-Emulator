@@ -382,3 +382,54 @@ int bdalloc(int dev, int bno)
    clr_bit(buf, bno-1);
    put_block(dev, bmap, buf);
 }
+
+int access(char *filename, char mode)
+{
+   int r = 0;
+   char checkbit;
+
+   if(running->uid == 0) // Superuser
+      return 1;
+   
+   // regular user.
+   int ino = getino(filename);
+   MINODE *mip = iget(dev, ino);
+
+   if(mip->INODE.i_uid == running->uid) // owner
+   {
+      switch(mode)
+      {
+         case('r'):
+            r = mip->INODE.i_mode & S_IRUSR;
+            break;
+         case('w'):
+            r = mip->INODE.i_mode & S_IWUSR;
+            break;
+         case('x'):
+            r = mip->INODE.i_mode & S_IXUSR;
+            break;
+         default:
+            break;
+      }
+   }
+   else //other
+   {
+      switch(mode)
+      {
+         case('r'):
+            r = mip->INODE.i_mode & S_IROTH;
+            break;
+         case('w'):
+            r = mip->INODE.i_mode & S_IWOTH;
+            break;
+         case('x'):
+            r = mip->INODE.i_mode & S_IXOTH;
+            break;
+         default:
+            break;
+      }
+   }
+
+   iput(mip);
+   return (r>0);
+}

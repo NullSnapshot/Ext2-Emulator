@@ -39,6 +39,10 @@ char line[128], cmd[32], pathname[128], arg2[128];
 #include "read_cat.c"
 #include "write_cp.c"
 
+// Level 3 files
+#include "mount_umount.c"
+
+
 int init()
 {
   int i, j;
@@ -59,7 +63,7 @@ int init()
   for (i=0; i<NPROC; i++){
     p = &proc[i];
     p->pid = i;
-    p->uid = p->gid = 0;
+    p->uid = p->gid = i;
     p->cwd = 0;
     for(int j=0; j<NFD; j++)
     {
@@ -149,6 +153,10 @@ int main(int argc, char *argv[ ])
   printf("root refCount = %d\n", root->refCount);
 
   // WRTIE code here to create P1 as a USER process
+  printf("creating P1 as running process\n");
+  proc[1].status = READY;
+  proc[1].cwd = iget(dev, 2);
+  printf("root refcount = %d\n", root->refCount);
   
   while(1){
     printf("input command : ");
@@ -187,13 +195,15 @@ int main(int argc, char *argv[ ])
         ex2opencommand();
     else if (strcmp(cmd, "close")== 0)
         ex2closecommand();
-    
     else if (strcmp(cmd, "pfd")==0)
         ex2pfd();
     else if (strcmp(cmd, "cat")==0)
         ex2cat();
     else if (strcmp(cmd, "cp")==0)
         ex2cp();
+    
+    else if(strcmp(cmd, "cs")==0)
+        ex2cs();
     else if (strcmp(cmd, "quit")==0)
        quit();
   }
@@ -209,4 +219,18 @@ int quit()
       iput(mip);
   }
   exit(0);
+}
+
+void ex2cs()
+{
+  if(running == &proc[0])
+  {
+    printf("Switching to P1\n");
+    running = &proc[1];
+  }
+  else
+  {
+    printf("Switching to P0\n");
+    running = &proc[0];
+  }
 }

@@ -5,6 +5,11 @@ int ex2rmdir()
     int ino = getino(pathname);
     MINODE *mip = iget(dev, ino);
     INODE *ip = &mip->INODE;
+    if(ip->i_uid != running->uid) // not owner
+    {
+        iput(mip);
+        return printf("Access Denied: Not owner of directory '%s'\n", pathname);
+    }
 
     //verify INODE is a dir.
     if(S_ISDIR(ip->i_mode))

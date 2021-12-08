@@ -44,6 +44,12 @@ int ex2unlink()
 {
     int ino = getino(pathname);
     MINODE *mip = iget(dev, ino);
+    INODE *ip = &mip->INODE;
+    if(ip->i_uid != running->uid) // not owner
+    {
+        iput(mip);
+        return printf("Access Denied: Not owner of file '%s'\n", pathname);
+    }
     // file has to be either a regular or symbolic link file.
     if(S_ISREG(mip->INODE.i_mode) || S_ISLNK(mip->INODE.i_mode))
     {

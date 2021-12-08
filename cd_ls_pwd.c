@@ -3,16 +3,23 @@
 
 int cd()
 {
-  int ino = getino(pathname);
-  MINODE *mip = iget(dev, ino);
-  if(S_ISDIR(mip->INODE.i_mode))
+  if(access(pathname, 'r') && access(pathname, 'x'))
   {
-    iput(running->cwd);
-    running->cwd = mip;
+    int ino = getino(pathname);
+    MINODE *mip = iget(dev, ino);
+    if(S_ISDIR(mip->INODE.i_mode))
+    {
+      iput(running->cwd);
+      running->cwd = mip;
+    }
+    else
+    {
+      printf("%s is not a directory!\n", pathname);
+    }
   }
   else
   {
-    printf("%s is not a directory!\n", pathname);
+    printf("Access Denied: You do not have permission to access %s\n",pathname);
   }
 }
 
