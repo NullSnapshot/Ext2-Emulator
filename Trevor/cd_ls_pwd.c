@@ -151,20 +151,10 @@ int rpwd(MINODE *wd)
 {
   u32 my_ino, parent_ino;
   char my_name[255];
-  int startdev = dev;
-  MOUNT * mptr;
 
   if (wd == root) return;
   //from wd-> INODE.i_block[0] get my_ino and parent_ino
   parent_ino = findino(wd, &my_ino);
-  /* Attempted fix, not part of submission
-  if(parent_ino == 2 && wd->dev != root->dev)
-  {
-    mptr = getmptr(wd->dev); // <-- Breaks here
-    dev = mptr->dev;
-    parent_ino = getino(mptr->dev, mptr->mounted_inode->ino);
-  }
-  */
   MINODE *pip = iget(dev, parent_ino);
   findmyname(pip, my_ino, my_name);
   rpwd(pip); // recurse call rpwd(pip) with parent minode

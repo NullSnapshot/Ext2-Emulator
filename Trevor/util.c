@@ -193,7 +193,7 @@ int search(MINODE *mip, char *name)
 
 MOUNT * getmptr(int dev)
 {
-  for(int i=0; i<8; i++)
+  for(int i=0; i<12; i++)
   {
     if(mountTable[i].dev == dev)
     {
@@ -244,18 +244,20 @@ int getino(char *pathname)
          MOUNT *mptr = getmptr(mip->dev);
          dev = root->dev;
          int newino = mptr->mounted_inode->ino;
-         mip = iget(dev, newino);
+         MINODE *upmip = iget(dev, newino);
          ino = mip->ino;
-         continue;
+         iput(mip);
+         return newino;
       }*/
       //downward traversal
       if(mip->mounted != 0)
       {
          MOUNT *mptr = mip->mptr;
          dev = mptr->dev;
-         mip = iget(mptr->dev, 2);
-         ino = mip->ino;
-         continue;
+         MINODE* mountmip = iget(mptr->dev, 2);
+         ino = mountmip->ino;
+         iput(mip);
+         return ino;
       }
    }
 

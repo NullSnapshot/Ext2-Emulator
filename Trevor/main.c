@@ -12,7 +12,6 @@
 #include "type.h"
 
 extern MINODE *iget();
-extern MOUNT mountTable[8];
 
 MINODE minode[NMINODE];
 MINODE *root;

@@ -2,7 +2,6 @@
 
 void ex2mount()
 {
-    printf("To be implemented!\n");
     if( strcmp(pathname, "") == 0 && strcmp(arg2, "") == 0) // display current mounts.
     {
         for(int i = 0; i < 8; i++)
@@ -10,7 +9,7 @@ void ex2mount()
             MOUNT *disk = &mountTable[i];
             if(disk->dev != 0)
             {
-                printf("%s mounted on %s\n",disk->name, disk->mount_name);
+                printf("%s [%d] mounted on %s\n",disk->name, disk->dev, disk->mount_name);
             }
         }
     }
@@ -107,6 +106,7 @@ void ex2mount()
         strncpy(mountTable[newDiskIndex].mount_name, arg2, strlen(arg2));
         mip->mounted = 1;
         mip->mptr = &mountTable[newDiskIndex];
+        MOUNT *sanitycheck = &mountTable[newDiskIndex];
         printf("Mounted '%s' to '%s'\n", pathname, arg2);
         return 0;
     }
